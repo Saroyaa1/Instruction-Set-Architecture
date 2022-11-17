@@ -1,0 +1,501 @@
+from bitstring import Bits
+#twoscomp is not working for some reason but this amazing library does everything with just 2 instructions...
+
+def twoscomp(x):
+
+  x = x.zfill(16)
+  y = ''
+  for i in range(16):
+    if (x[i] == '0'):
+      y = y + '1'
+    else:
+      y = y + '0'
+
+
+# input(f'y = {y} for now, i = {i}, trying to access x[{i}] and y[{i}]')
+  y_int = int(y, base=2)
+  z_int = y_int + 1
+  z = bin(z_int)
+  z = z[2:]
+  return z
+  print(z)
+
+#CustomParity was changed a little bit because it wasnt working properly
+def CustomParity(x):
+  xor = bin(x)
+  if x < 0:
+    b = Bits(int= x, length=12)
+    print(b.bin)
+    h = b.bin
+    '''
+    xor = xor[3:]
+    print(xor)
+    xor = xor.zfill(32)
+    print(xor)
+    h = twoscomp(xor)
+    print('Neg')
+    print(x)
+    print(h)
+    '''
+  else:
+    print('Positive')
+    xor = xor[2:]
+    xor = xor.zfill(32)
+    h = xor
+    print(x)
+    print(h)
+
+  holder = 0
+  #for i in range(32):
+   # if h[i] == '1':
+     # holder += 1
+    #else:
+      #holder += 0
+  holder = h.count('1')
+  print("holder: ", holder)
+    
+    #print("holder: ", holder)
+  if holder % 2 == 1:
+    print("The parity of the array is p(x) = 1")
+    return 1;
+  else:
+    print("The parity of the array is p(x) = 0")
+    return 0;
+
+
+# # # # # # # # # #
+#CustomParity(-1);
+file1 = open('mipshex8.txt', 'r')
+file2 = open('instr.txt', 'a')  #open instr file and clear it
+file2.truncate(0)
+
+instr_dict = {}
+
+while True:
+  print("yes2")
+  file2 = open('instr.txt', 'a')
+  # Get next line from file
+  line = file1.readline()
+  if not line:
+    break
+  # print("Line{}: {}".format(count, line.strip()))
+  print(line)  #checking if each line is seperate, works
+
+  user = input("Press any key to continue")
+  #while (user != 'e'):
+  a = line
+  #Something goes wrong right here after the first instr is written
+  print("a ", a)
+  c = int(a, base=2)
+  print("c ", c)
+  d = bin(c)
+  print("d ", d)
+  e = d[2:]
+  print("e ", e)
+  e = e.zfill(8)
+  #e = e.zfill(32)
+  #print(e)
+  print("e after fill ", e)  #check mips is being converted to binary
+  print('\n')
+
+  op = e[0:4]
+  rs = e[4:6]
+  rt = e[6:8]
+  imm = e[6:8]
+
+  print("op:", op)
+  print("rx:", rs)
+  print("ry:", rt)
+  print("imm:", imm)
+
+  # # # # # # # # # #
+
+  if (op == '0000'):
+    print("SpecInit")
+    f = int(rs, base=2)
+    g = int(imm, base=2)
+    print("rx: ", rs)
+    print("imm: ", imm)
+    file2.write("SpecInit ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '0001'):
+    print("Par")
+    f = int(rs, base=2)
+    g = int(rt, base=2)
+    print("rx: ", rs)
+    print("ry: ", rt)
+    file2.write("Par ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '0010'):
+    print("Sw")
+    f = int(rs, base=2)
+    g = int(rt, base=2)
+    print("rx: ", rs)
+    print("ry: ", rt)
+    file2.write("Sw ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '1101'):
+    print("HALT")
+    f = int(rs, base=2)
+    g = int(rt, base=2)
+    print("rx: ", rs)
+    print("ry: ", rt)
+    file2.write("HALT ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '0011'):
+    print("Inc")
+    f = int(rs, base=2)
+    g = int(imm, base=2)
+    print("rx: ", rs)
+    print("imm: ", imm)
+    file2.write("Inc ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '0100'):
+    print("Beq")
+    f = int(rs, base=2)
+    g = int(rt, base=2)
+    print("rx: ", rs)
+    print("ry: ", rt)
+    file2.write("Beq ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '0101'):
+    print("Bpos")
+    f = int(rs, base=2)
+    g = int(imm, base=2)
+    print("rx: ", rs)
+    print("imm: ", imm)
+    file2.write("Bpos ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+    
+  '''
+  if (op == '0110'):
+  print("")
+  f = int(rs, base=2)
+  g = int(rt, base=2)           # Two's Comp, no longer needed
+  h = int(rd, base=2)
+  i = int(sh, base=2)
+  print("rd: ", rd)
+  '''
+
+  if (op == '0111'):
+    print("MposAdd")
+    f = int(rs, base=2)
+    g = int(imm, base=2)
+    print("rx: ", rs)
+    print("imm: ", imm)
+    file2.write("MposAdd ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '1000'):
+    print("Nor")
+    f = int(rs, base=2)
+    g = int(imm, base=2)
+    print("rx: ", rs)
+    print("imm: ", imm)
+    file2.write("Nor ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  if (op == '1001'):
+    print("Jump")
+    f = int(rs, base=2)
+    g = int(imm, base=2)
+    print("rx: ", rs)
+    print("imm: ", imm)
+    file2.write("Jump ")
+    file2.write(", ".join([str(f), str(g)]))
+    file2.write("\n")
+
+  A = []  #memory
+  for i in range(0x2000, 0x21ff, 4):
+    A.append(0)
+
+    #print(A)
+print("Starting the conversion from machine code to result.")
+print('Reading in asm file (prog.asm) into a list of strings...')
+f = open('instr.txt')
+lines = f.readlines()
+f.close()
+print('Building up a list of asm lines:')
+print(lines)
+input("\n...press any key to continue... \n")
+
+print("len(lines): ", len(lines))
+count = 0
+print(f'\n\n\n\n{lines}\n\n\n\n\n')
+for i in range(len(lines)):
+  lines[i] = lines[i].replace("\n", "")
+  lines[i] = lines[i].replace(",", "")
+
+# print(lines)
+
+input("\n...press any key to continue... \n")
+
+print('\n\n\n\n')
+new = []
+for i in range(len(lines)):
+  pos = lines[i].find(':')
+  if pos >= 0:
+    continue
+  else:
+    new.append(lines[i].split())
+
+
+for i in range(len(new)):
+  print(f'lines[{i}]: {lines[i]}')
+  print(f'new[{i}]: {new[i]}')
+  print()
+print('\n\n\n\n')
+print("len(new): ", len(new))
+
+instr_dict = {}
+
+# label : PC value
+label_dict = {}
+PC = 0
+# find all the labels (by searching for : in the line)
+for i, ln in enumerate(lines):
+  pos = ln.find(":")
+  print(
+  f'PC = {PC:2} = {hex(PC):10} line [{i}] is {ln:20}  ":" found at position {pos:10} '
+  )
+  if pos >= 0:  # line is a label, add to label dictionary, do not increment PC
+    label_dict[ln[:pos]] = PC
+    input(f'This is a label -> addr {PC}. Press any key to continue... \n')
+  else:  # line is not a label, thus is a valid instruction,  add to instruction dictionary, increment PC.
+    count += 1
+    instr_dict[PC] = ln
+    PC += 1
+  input(f'This is an instruction. Press any key to continue... \n')
+
+print("instr", instr_dict)
+reg_dict = {}
+#reg_dict[0] = 0
+
+print('\n\n\n\n\n')
+print(label_dict)  #should be empty
+print('\n\n\n\n\n')
+print(new)   #working bruv
+
+Rt = 0
+Rs = 0
+imm = 0
+PC = 0
+counter = 0
+
+for i in range(4):
+  reg_dict[i] = 0
+  
+print("reg_dict[Rt]: ", reg_dict)
+print("reg_dict[Rt]: ", reg_dict[Rt])
+
+while PC < len(new):
+    #print("PC", PC*4)
+    print("newpc", new[PC][0])
+    if new[PC][0] == 'SpecInit':
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      #Rs = int(l[2])
+      imm = int(l[2])
+      print("Rt: ", Rt)
+      print("imm: ", imm)
+      PC = PC + 1
+      if(imm == 1):
+        reg_dict[Rt] = imm
+      else:
+        reg_dict[Rt] = 35
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+
+    if new[PC][0] == 'Par':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      Rs = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("Rs: ", Rs)
+      PC = PC + 1
+      reg_dict[Rt] = CustomParity(reg_dict[Rs])
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")
+
+    if new[PC][0] == 'Sw':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      Rs = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("Rs: ", Rs)
+      PC = PC + 1
+      if(Rt == 2):
+        A[reg_dict[Rs] + 40] = reg_dict[Rt]
+      else:
+        A[reg_dict[Rs]] = reg_dict[Rt]
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")
+
+    if new[PC][0] == 'Bpos':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      Rs = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("Rs: ", Rs)
+      if reg_dict[Rt] > 0:
+        PC = PC + 4
+      else:
+        PC = PC + 1
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")
+
+    if new[PC][0] == 'MposAdd':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      Rs = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("Rs: ", Rs)
+      reg_dict[Rt] = -(reg_dict[Rt]) + 1
+      PC = PC + 1
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")
+
+    if new[PC][0] == 'Inc':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      imm = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("imm: ", imm)
+      reg_dict[Rt] = reg_dict[Rt] + 1
+      PC = PC + 1
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")
+
+    if new[PC][0] == 'Beq':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      Rs = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("Rs: ", Rs)
+      if reg_dict[Rt] == reg_dict[Rs]:
+        print("This is it, Good Bye!")
+        counter += 1
+        print("instr count: ", counter)
+        exit();
+      else:
+        PC = 2
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")  
+
+    if new[PC][0] == 'Nor':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      imm = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("imm: ", imm)
+      reg_dict[Rt] = int((~reg_dict[Rt] & ~imm)) #this isa NOR operation doing a nor of a positive # w/ 1 will give us the next number as a negative
+      PC = PC + 1
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")
+
+    if new[PC][0] == 'Jump':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      imm = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("imm: ", imm)
+      PC = 2
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")  
+
+    if new[PC][0] == 'HALT':
+      print("newpc", new[PC][0])
+      l = new[PC]
+      print("PC", PC * 4)
+      Rt = int(l[1])
+      Rs = int(l[2])
+      #imm = int(l[2])
+      print("Rt: ", Rt)
+      print("Rs: ", Rs)
+      if(reg_dict[Rt] == reg_dict[Rs]):
+        print("This is it, Good Bye!")
+        counter += 1
+        print("instr count: ", counter)
+        exit();
+      else:
+        PC = PC + 1
+      print(A)
+      #print("addi reg", reg_dict[Rt])
+      print(f"Rt : {reg_dict[Rt]}\n")
+      counter += 1
+      print("reg_dict", reg_dict)
+      x = input("say some")  
