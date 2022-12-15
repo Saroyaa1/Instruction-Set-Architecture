@@ -1,5 +1,5 @@
 from bitstring import Bits
-#twoscomp is not working for some reason but this amazing library does everything with just 2 instructions...
+
 
 def twoscomp(x):
 
@@ -20,7 +20,7 @@ def twoscomp(x):
   return z
   print(z)
 
-#CustomParity was changed a little bit because it wasnt working properly
+
 def CustomParity(x):
   xor = bin(x)
   if x < 0:
